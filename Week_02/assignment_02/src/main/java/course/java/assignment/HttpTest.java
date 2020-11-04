@@ -1,4 +1,4 @@
-package java.assignment;
+package course.java.assignment;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
