@@ -15,7 +15,8 @@
     </properties>
 
     <modules>
-        <module>assignment_01</module>
+        <module>week05_assignment_01</module>
+        <module>week05_assignment_02</module>
     </modules>
 
     <build>
