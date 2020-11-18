@@ -17,6 +17,7 @@
     <modules>
         <module>week05_assignment_01</module>
         <module>week05_assignment_02</module>
+        <module>week05_assignment_03</module>
     </modules>
 
     <build>

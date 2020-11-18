@@ -1,0 +1,2 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  io.x16fd16b.assignment03.school.starter.SchoolAutoConfiguration
