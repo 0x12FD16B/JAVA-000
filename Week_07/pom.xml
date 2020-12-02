@@ -17,6 +17,7 @@
     <modules>
         <module>week07_thrus_assignment_02</module>
         <module>week07_sat_assignment_02</module>
+        <module>week07_sat_assignment_03</module>
     </modules>
 
     <build>

@@ -60,17 +60,24 @@ public class OrderDAOTest {
         log.info("insert data with loop cost {} ms", sw.getTime());
     }
 
-    // 耗时: 135429 ms batchSize = 1000
     // 耗时: 142654 ms batchSize = 500
     @Test
-    public void testPrepareStatementAddBatch() {
+    public void testPrepareStatementAddBatch_with_batchSize500() {
+        doTestPrepareStatementAddWithBatchSize(500);
+    }
+
+    // 耗时: 135429 ms batchSize = 1000
+    @Test
+    public void testPrepareStatementAddBatch_with_batchSize1000() {
+        doTestPrepareStatementAddWithBatchSize(1000);
+    }
+
+    private void doTestPrepareStatementAddWithBatchSize(int batchSize) {
         log.info("into method testPrepareStatementAddBatch");
         StopWatch sw = StopWatch.createStarted();
-        long count = 1_000_000;
-        TestSuiteDataSet testSuiteDataSet = this.buildBatchInsertTestSuiteDataSet(count);
+        TestSuiteDataSet testSuiteDataSet = this.buildBatchInsertTestSuiteDataSet(1000000);
         List<Order> orders = testSuiteDataSet.orders;
         List<OrderItem> orderItems = testSuiteDataSet.orderItems;
-        int batchSize = 500;
         List<List<Order>> orderPieces = CollectionUtil.split(orders, batchSize);
         List<List<OrderItem>> orderItemPieces = CollectionUtil.split(orderItems, batchSize);
         for (int i = 0; i < orderPieces.size(); i++) {
@@ -81,13 +88,34 @@ public class OrderDAOTest {
         log.info("insert data with prepare statement cost {} ms", sw.getTime());
     }
 
-    // 耗时: 20446 ms batchSize 1000
-    // 耗时: 22608 ms batchSize 5000
+
     // 耗时: 19398 ms batchSize 500
     @Test
-    public void testInsertBatch() {
+    public void testInsertBatch_with_valueSize500() {
         long count = 1_000_000;
         int batchSize = 500;
+        doTestInsertBatchWithValueSize(count, batchSize);
+
+    }
+
+
+    // 耗时: 20446 ms batchSize 1000
+    @Test
+    public void testInsertBatch_with_valueSize1000() {
+        long count = 1_000_000;
+        int batchSize = 1000;
+        doTestInsertBatchWithValueSize(count, batchSize);
+    }
+
+    // 耗时: 22608 ms batchSize 5000
+    @Test
+    public void testInsertBatch_with_valueSize5000() {
+        long count = 1_000_000;
+        int batchSize = 5000;
+        doTestInsertBatchWithValueSize(count, batchSize);
+    }
+
+    private void doTestInsertBatchWithValueSize(long count, int batchSize) {
         log.info("into method testInsertBatch");
         StopWatch sw = StopWatch.createStarted();
         int pieces = (int) count / batchSize;
@@ -121,7 +149,6 @@ public class OrderDAOTest {
 
         sw.stop();
         log.info("insert data with batch segment cost {} ms", sw.getTime());
-
     }
 
     private void executePrepareStatementAddBatch(List<Order> orders, List<OrderItem> orderItems, int size) {

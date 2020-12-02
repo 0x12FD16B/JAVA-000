@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author David Liu
  */
 @Slf4j
-public class DruidRoundRobinLBDataSource extends DruidDataSource {
+public class DruidRoundRobinLBDataSource extends DruidDataSource implements LoadBalanceDruidDataSourceGroup {
 
     private static final long serialVersionUID = 531342099237106220L;
 
@@ -30,20 +30,21 @@ public class DruidRoundRobinLBDataSource extends DruidDataSource {
         this.dataSources = dataSources;
     }
 
-    private DruidDataSource acquireDatasource() {
+    @Override
+    public DruidDataSource acquireDataSource() {
         return dataSources.get((0x7fffffff & idx.getAndIncrement()) % dataSources.size());
     }
 
     @Override
     public DruidPooledConnection getConnection() throws SQLException {
-        DruidDataSource druidDataSource = this.acquireDatasource();
+        DruidDataSource druidDataSource = this.acquireDataSource();
         log.info("数据源负载均衡轮询 >>> 数据源: {} 被选择", druidDataSource.getName());
         return druidDataSource.getConnection();
     }
 
     @Override
     public Connection getConnection(String username, String password) throws SQLException {
-        DruidDataSource druidDataSource = this.acquireDatasource();
+        DruidDataSource druidDataSource = this.acquireDataSource();
         log.info("数据源负载均衡轮询 >>> 数据源: {} 被选择", druidDataSource.getName());
         return druidDataSource.getConnection(username, password);
     }
