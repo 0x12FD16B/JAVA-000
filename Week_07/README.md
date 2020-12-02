@@ -17,8 +17,8 @@
 
 | 运行描述 | 耗时 | 测试方法 |
 | ------- | ----- | ------ |
-| 写入 100 万条订单数据和订单明细 (一条订单数据包含一条订单明细)<br>使用 `PreparedStatement` Batch 处理方式 `batchSize` 设置为 500 | 142654 ms | `testPrepareStatementAddBatch_with_batchSize500`|
-| 写入 100 万条订单数据和订单明细 (一条订单数据包含一条订单明细)<br>使用 `PreparedStatement` Batch 处理方式 `batchSize` 设置为 1000 | 135429 ms | `testPrepareStatementAddBatch_with_batchSize1000`|
+| 写入 100 万条订单数据和订单明细 (一条订单数据包含一条订单明细)<br>使用 `PreparedStatement` Batch 处理方式 `batchSize` 设置为 500 | 20043 ms | `testPrepareStatementAddBatch_with_batchSize500`|
+| 写入 100 万条订单数据和订单明细 (一条订单数据包含一条订单明细)<br>使用 `PreparedStatement` Batch 处理方式 `batchSize` 设置为 1000 | 20513 ms | `testPrepareStatementAddBatch_with_batchSize1000`|
 
 > case3
 
@@ -98,6 +98,20 @@ mybatis.mapper-locations=classpath:mapper/**.xml
 实现同样的需求(实现多数据源读写分离), 1.x 系列的实现对代码有明显的侵入性, 2.0 只需要做相应的配置
 
 ### 作业中遇到的问题
+> 测试不同方式 Insert 性能
+
+在 JDBC URL 上是否加入参数 `rewriteBatchedStatements=true` 对 PrepareStatement UpdateBatch 影响特别大
+
+MySQL官方文档对 `` 参数的说明: 
+
+> rewriteBatchedStatements
+  
+  Should the driver use multiqueries (irregardless of the setting of "allowMultiQueries") as well as rewriting of prepared statements for INSERT into multi-value inserts when executeBatch() is called? Notice that this has the potential for SQL injection if using plain java.sql.Statements and your code doesn't sanitize input correctly. Notice that for prepared statements, if you don't specify stream lengths when using PreparedStatement.set*Stream(), the driver won't be able to determine the optimum number of parameters per batch and you might receive an error from the driver that the resultant packet is too large. Statement.getGeneratedKeys() for these rewritten statements only works when the entire batch includes INSERT statements. Please be aware using rewriteBatchedStatements=true with INSERT .. ON DUPLICATE KEY UPDATE that for rewritten statement server returns only one value as sum of all affected (or found) rows in batch and it isn't possible to map it correctly to initial statements; in this case driver returns 0 as a result of each batch statement if total count was 0, and the Statement.SUCCESS_NO_INFO as a result of each batch statement if total count was > 0.
+  
+  Default: false
+  
+  Since version: 3.1.13
+
 > 读写分离 2.0 作业
 
 1. 配置问题

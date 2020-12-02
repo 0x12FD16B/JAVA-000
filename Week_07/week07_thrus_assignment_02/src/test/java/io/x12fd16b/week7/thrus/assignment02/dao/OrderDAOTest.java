@@ -60,13 +60,13 @@ public class OrderDAOTest {
         log.info("insert data with loop cost {} ms", sw.getTime());
     }
 
-    // 耗时: 142654 ms batchSize = 500
+    // 耗时: 20043 ms batchSize = 500
     @Test
     public void testPrepareStatementAddBatch_with_batchSize500() {
         doTestPrepareStatementAddWithBatchSize(500);
     }
 
-    // 耗时: 135429 ms batchSize = 1000
+    // 耗时: 20513 ms batchSize = 1000
     @Test
     public void testPrepareStatementAddBatch_with_batchSize1000() {
         doTestPrepareStatementAddWithBatchSize(1000);
