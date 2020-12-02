@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.x12fd16b.week7.sat.assignment02.dao.mapper.UserMapper">
+    <resultMap id="rsMap" type="io.x12fd16b.week7.sat.assignment02.dao.entity.User">
+        <id property="id" column="id"/>
+        <result property="account" column="account"/>
+        <result property="mobile" column="mobile"/>
+        <result property="nickname" column="nick_name"/>
+        <result property="gender" column="gender"/>
+        <result property="brief" column="brief"/>
+        <result property="gmtCreate" column="gmt_create"/>
+        <result property="gmtModified" column="gmt_modified"/>
+    </resultMap>
+
+    <select id="listAll" resultMap="rsMap">
+        SELECT *
+        FROM `user`;
+    </select>
+
+    <insert id="createUser">
+        INSERT INTO `user` (`id`, `account`, `mobile`, `nick_name`, `gender`, `brief`)
+        values (#{user.id}, #{user.account}, #{user.mobile}, #{user.nickname}, #{user.gender}, #{user.brief});
+    </insert>
+</mapper>
