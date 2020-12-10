@@ -93,6 +93,11 @@ CREATE TABLE IF NOT EXISTS `order_item`
 
 [代码入口](./week08_thurs_assignment_02/src/main/java/io/x12fd16b/week8/thurs/assignment02/api)
 
+> 总结:
+
+1. 使用 shardingsphere-jdbc 模块可以利用 shardingsphere-jdbc 模块在应用中的代理 jdbc 连接执行 DDL 快速建表和删表
+2. 在使用 shardingsphere-jdbc 执行 sql 时带上分库分表分片键可以减少通过 shardingsphere-jdbc 发送到真实数据库的查询语句条数
+
 ## 作业题目 (周六)
 
 * （必做）基于 hmily TCC 或 ShardingSphere 的 Atomikos XA 实现一个简单的分布式事务应用 demo（二选一），提交到 Github。
