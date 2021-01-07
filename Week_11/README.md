@@ -7,3 +7,5 @@
     * [代码入口](./assignment04/src/main/java/io/x12fd16b/assignment/week11/assignment04/count)
     * [测试代码入口](./assignment04/src/test/java/io/x12fd16b/assignment/week11/assignment04/count)
 ### 5.（必做）基于 Redis 的 PubSub 实现订单异步处理
+* [代码入口](./assignment05/src/main/java/io/x12fd16b/assignment/week11/assignment05/)
+* [测试代码入口](./assignment05/src/test/java/io/x12fd16b/assignment/week11/assignment05/)
