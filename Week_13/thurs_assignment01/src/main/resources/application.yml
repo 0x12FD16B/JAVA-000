@@ -1,0 +1,5 @@
+spring:
+  activemq:
+    broker-url: tcp://118.24.129.20:61616
+    pool:
+      enabled: false
