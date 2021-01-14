@@ -70,3 +70,88 @@ tar xzvf apache-activemq-5.15.14-bin.tar.gz
 ### 周六作业
 
 1. 搭建一个 3 节点 Kafka 集群，测试功能和性能；实现 spring kafka 下对 kafka 集群的操作，将代码提交到 github。
+
+> 环境准备
+
+1. 下载 Kafka
+
+在 Apache Kafka [主页](http://kafka.apache.org/), 下载 Kafka 2.6.1 [安装包](https://mirrors.tuna.tsinghua.edu.cn/apache/kafka/2.6.1/kafka_2.12-2.6.1.tgz)
+
+2. 解压文件
+
+```shell
+tar xzvf kafka_2.12-2.6.1.tgz
+```
+
+解压后, 得到目录 `kafka_2.12-2.6.1`, 将此目录复制 3 份, 分别为 `kafka_01`, `kafka_02`, `kafka_03`, 得到目录结构如下:
+
+```text
+├── kafka_01
+├── kafka_02
+└── kafka_03
+```
+
+3. 修改配置文件
+
+kafka broker 相关的配置文件在 `config` 目录下, 修改 `server.properties`:
+
+主要修改的内容是 `broker.id`, `log.dirs`, 和 `zookeeper.connect`; 不同的 kafka broker, `broker.id` 不能重复, 在同一台机器上 `log.dirs` 不能相同, 一个集群 `zookeeper.connect` 的地址应该相同.
+
+4. 启动集群
+
+```shell
+./kafka_01/bin/kafka-server-start.sh config/server.properties &
+./kafka_02/bin/kafka-server-start.sh config/server.properties &
+./kafka_03/bin/kafka-server-start.sh config/server.properties &
+```
+
+5. 验证集群
+
+使用 ZooInspector 查看 kafka 集群元数据, 观察 zookeeper 关于 kafka 集群的节点信息 `/cluster`, `/controller_epoch`, `/contoller`, `/brokers`.
+
+* 通过发送消息到 topic 验证集群是否创建成功
+
+使用 kafka 安装目录下 `kafka-topics.sh` 创建 topic:
+
+```shell
+./kafka-topics.sh --create --zookeeper 192.168.118.14:2181 --replication-factor 3 --partitions 3 --topic assignment
+Created topic assignment.
+```
+`--replication-factor 2` 设置复制 3 份, `--partitions 1` 指定在 3 个 broker 中创建 3 个分区, `--topic assignment` 设置主题名为 `assignment`
+
+使用 kafka 安装目录下 `kafka-console-producer.sh` 发送消息到 `broker0`, 使用 `kafka-console-consumer.sh` 到 `broker1` 接收消息.
+
+```shell
+./kafka-console-producer.sh --broker-list 127.0.0.1:9092 --topic assignment
+```
+
+```shell
+./kafka-console-consumer.sh --bootstrap-server 127.0.0.1:9093 --topic assignment --from-beginning
+```
+
+> 集群性能测试
+
+使用 `kafka-producer-perf-test.sh` 测试集群发送
+
+```shell
+kafka-producer-perf-test.sh --num-records 5000000 --record-size 1000 --throughput 200000 --topic assignment --producer-props bootstrap.servers=127.0.0.1:9092,127.0.0.1:9093,127.0.0.1:9094
+310521 records sent, 62104.2 records/sec (59.23 MB/sec), 450.1 ms avg latency, 911.0 ms max latency.
+705192 records sent, 141038.4 records/sec (134.50 MB/sec), 241.2 ms avg latency, 909.0 ms max latency.
+947573 records sent, 189514.6 records/sec (180.74 MB/sec), 173.9 ms avg latency, 365.0 ms max latency.
+891636 records sent, 178327.2 records/sec (170.07 MB/sec), 183.2 ms avg latency, 336.0 ms max latency.
+779989 records sent, 155252.6 records/sec (148.06 MB/sec), 208.9 ms avg latency, 486.0 ms max latency.
+909642 records sent, 181928.4 records/sec (173.50 MB/sec), 181.9 ms avg latency, 417.0 ms max latency.
+5000000 records sent, 153600.393217 records/sec (146.48 MB/sec), 209.89 ms avg latency, 911.00 ms max latency, 252 ms 50th, 479 ms 95th, 813 ms 99th, 896 ms 99.9th.
+```
+
+使用 `kafka-consumer-perf-test.sh` 测试集群消费性能: 
+
+```shell
+kafka-consumer-perf-test.sh --bootstrap-server 127.0.0.1:9092,127.0.0.1:9093,127.0.0.1:9094 --topic assignment --fetch-size 1048576 --messages 5000000 --threads 1
+```
+
+得到结果:
+
+| start.time | end.time | data.consumed.in.MB | MB.sec | data.consumed.in.nMsg | nMsg.sec | rebalance.time.ms | fetch.time.ms | fetch.MB.sec |  fetch.nMsg.sec |
+| ---------- | ---------| --------------------| -------| ----------------------| ---------| ------------------| --------------| -------------| ----------------|
+| 2021-01-14 15:51:08:011 | 2021-01-14 15:51:14:263 | 4768.5642 | 762.7262 | 5000209 | 799777.5112 | 1610610668424 | -1610610662172 | -0.0000 | -0.0031 |
