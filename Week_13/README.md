@@ -155,3 +155,7 @@ kafka-consumer-perf-test.sh --bootstrap-server 127.0.0.1:9092,127.0.0.1:9093,127
 | start.time | end.time | data.consumed.in.MB | MB.sec | data.consumed.in.nMsg | nMsg.sec | rebalance.time.ms | fetch.time.ms | fetch.MB.sec |  fetch.nMsg.sec |
 | ---------- | ---------| --------------------| -------| ----------------------| ---------| ------------------| --------------| -------------| ----------------|
 | 2021-01-14 15:51:08:011 | 2021-01-14 15:51:14:263 | 4768.5642 | 762.7262 | 5000209 | 799777.5112 | 1610610668424 | -1610610662172 | -0.0000 | -0.0031 |
+
+> 使用 spring-kafka 操作 kafka 集群
+
+[代码](./sat_assignment01/src/main/java/io/x12fd16b/assignment/week13/sat/)

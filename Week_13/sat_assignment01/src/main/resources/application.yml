@@ -1,0 +1,12 @@
+spring:
+  kafka:
+    consumer:
+      group-id: assignment
+      auto-offset-reset: earliest
+      bootstrap-servers: 127.0.0.1:9092,127.0.0.1:9093,127.0.0.1:9094
+    producer:
+      bootstrap-servers: 127.0.0.1:9092,127.0.0.1:9093,127.0.0.1:9094
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring.json.type.mapping: order:io.x12fd16b.assignment.week13.sat.message.Order
